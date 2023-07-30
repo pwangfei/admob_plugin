@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.gms.ads.nativead.NativeAdView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/native_adview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:layout_gravity="center"
+        android:clipChildren="true">
+
+        <com.google.android.gms.ads.nativead.MediaView
+            android:id="@+id/nativeMedia"
+            android:layout_width="fill_parent"
+            android:layout_height="187.0dip"
+            android:layout_gravity="center_horizontal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="23.0dip"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/nativeName"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10.0dip"
+            android:gravity="center"
+            android:text="AD"
+            android:textColor="#FFFFFFFF"
+            android:textSize="10.0sp"
+            app:layout_constraintBottom_toBottomOf="@id/nativeMedia"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/nativeIcon"
+            android:layout_width="39.0dip"
+            android:layout_height="39.0dip"
+            android:layout_marginStart="12.0dip"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nativeMedia" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/nativeName"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12.0dip"
+            android:layout_marginLeft="12.0dip"
+            android:layout_marginRight="12.0dip"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textSize="14.0sp"
+            app:layout_constraintEnd_toStartOf="@id/nativeBtn"
+            app:layout_constraintStart_toEndOf="@id/nativeIcon"
+            app:layout_constraintTop_toTopOf="@id/nativeIcon" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/nativeHint"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12.0dip"
+            android:layout_marginLeft="12.0dip"
+            android:layout_marginTop="2.0dip"
+            android:layout_marginRight="12.0dip"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="#ffb6b6b6"
+            android:textSize="12.0sp"
+            app:layout_constraintEnd_toStartOf="@id/nativeBtn"
+            app:layout_constraintStart_toEndOf="@id/nativeIcon"
+            app:layout_constraintTop_toBottomOf="@id/nativeName" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/nativeBtn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="78.0dip"
+            android:layout_height="34.0dip"
+            android:layout_marginEnd="12.0dip"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFFFF"
+            android:textSize="13.0sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nativeMedia" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.gms.ads.nativead.NativeAdView>
