@@ -31,6 +31,8 @@ class AdmobOpenAd(
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "load" -> {
+
+                val adUnitId = call.argument<String>("adUnitId")
                 val loadCallback: AppOpenAd.AppOpenAdLoadCallback =
                     object : AppOpenAd.AppOpenAdLoadCallback() {
 
@@ -51,7 +53,7 @@ class AdmobOpenAd(
                 val request = AdRequest.Builder().build()
                 AppOpenAd.load(
                     mActivity,
-                    "ca-app-pub-3940256099942544/3419835294",
+                    adUnitId,
                     request,
                     AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
                     loadCallback

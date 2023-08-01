@@ -10,26 +10,16 @@ class AdmobOpenAd  {
   late MethodChannel _adChannel;
   final String adUnitId;
 
-  final bool nonPersonalizedAds;
 
   AdmobOpenAd({
     required this.adUnitId,
-    this.nonPersonalizedAds = false,
   })  {
 
     _adChannel = MethodChannel('admob_flutter/apenad');
     _adChannel.setMethodCallHandler(handleEvent);
   }
 
-  static String get testAdUnitId {
-    if (Platform.isAndroid) {
-      return 'ca-app-pub-3940256099942544/1033173712';
-    } else if (Platform.isIOS) {
-      return 'ca-app-pub-3940256099942544/4411468910';
-    } else {
-      throw UnsupportedError('Unsupported platform');
-    }
-  }
+
 
   Future<bool?> get isLoaded async {
     final result = await _channel.invokeMethod('isLoaded', _channelMethodsArguments);
@@ -40,7 +30,6 @@ class AdmobOpenAd  {
     await _channel.invokeMethod('load',
       _channelMethodsArguments
         ..['adUnitId'] = adUnitId
-        ..['nonPersonalizedAds'] = nonPersonalizedAds
     );
   }
 

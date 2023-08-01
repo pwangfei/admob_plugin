@@ -27,8 +27,9 @@ class AdmobInterstitial(private val flutterPluginBinding: FlutterPlugin.FlutterP
   override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
     when(call.method) {
       "load" -> {
+        val adUnitId = call.argument<String>("adUnitId")
         val adRequest: AdRequest = AdRequest.Builder().build()
-        InterstitialAd.load(mActivity, "ca-app-pub-3940256099942544/1033173712", adRequest,
+        InterstitialAd.load(mActivity, adUnitId, adRequest,
           object : InterstitialAdLoadCallback() {
             override fun onAdLoaded(interstitialAd: InterstitialAd) {
 
