@@ -26,7 +26,10 @@ class AdmobInterstitial(private val flutterPluginBinding: FlutterPlugin.FlutterP
   private var mInterstitialAd: InterstitialAd? = null
   override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
     when(call.method) {
+
+
       "load" -> {
+        val adChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "admob_flutter/interstitial")
         val adUnitId = call.argument<String>("adUnitId")
         val adRequest: AdRequest = AdRequest.Builder().build()
         InterstitialAd.load(mActivity, adUnitId, adRequest,
@@ -34,6 +37,8 @@ class AdmobInterstitial(private val flutterPluginBinding: FlutterPlugin.FlutterP
             override fun onAdLoaded(interstitialAd: InterstitialAd) {
 
               mInterstitialAd = interstitialAd
+
+              adChannel.invokeMethod("loaded", null)
               Log.e("wpf123wpf", "onAdLoaded")
             }
 
@@ -41,6 +46,7 @@ class AdmobInterstitial(private val flutterPluginBinding: FlutterPlugin.FlutterP
               // Handle the error
               Log.e("wpf123wpf", loadAdError.message)
               mInterstitialAd = null
+              adChannel.invokeMethod("failedToLoad", null)
             }
 
           })

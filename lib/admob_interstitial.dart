@@ -52,36 +52,12 @@ class AdmobInterstitial  {
 
     switch (call.method) {
       case 'loaded':
-        print("interstitialAd===================================================loaded");
+        print("flutter插页interstitialAd===================================================loaded");
         break;
       case 'failedToLoad':
-        print("interstitialAd===================================================failedToLoad");
+        print("flutter插页interstitialAd===================================================failedToLoad");
         break;
-      case 'clicked':
-        print("interstitialAd===================================================clicked");
-        break;
-      case 'impression':
-        print("interstitialAd===================================================impression");
-        break;
-      case 'opened':
-        print("interstitialAd===================================================opened");
-        break;
-      case 'leftApplication':
-        print("interstitialAd===================================================leftApplication");
-        break;
-      case 'closed':
-        print("interstitialAd===================================================closed");
-        break;
-      case 'completed':
-        print("interstitialAd===================================================completed");
-        break;
-      case 'rewarded':
-        print("interstitialAd===================================================rewarded");
-        break;
-      case 'started':
 
-        print("interstitialAd===================================================started");
-        break;
     }
   }
 

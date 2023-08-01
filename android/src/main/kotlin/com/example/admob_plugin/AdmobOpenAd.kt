@@ -31,7 +31,7 @@ class AdmobOpenAd(
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "load" -> {
-
+                val adChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "admob_flutter/apenad")
                 val adUnitId = call.argument<String>("adUnitId")
                 val loadCallback: AppOpenAd.AppOpenAdLoadCallback =
                     object : AppOpenAd.AppOpenAdLoadCallback() {
@@ -39,6 +39,7 @@ class AdmobOpenAd(
                         override fun onAdLoaded(p0: AppOpenAd) {
                             super.onAdLoaded(p0)
                             appOpenAd = p0;
+                            adChannel.invokeMethod("onAdLoaded", null)
                             Log.e("wpf123wpf", "onAdLoaded: ======================")
                         }
 
@@ -46,7 +47,7 @@ class AdmobOpenAd(
                         override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                             super.onAdFailedToLoad(loadAdError)
                             Log.e("wpf123wpf", "LoadAdError: ======================"+loadAdError.message)
-
+                            adChannel.invokeMethod("onAdFailedToLoad", null)
                         }
 
                     }
