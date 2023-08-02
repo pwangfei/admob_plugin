@@ -26,11 +26,12 @@ class AdmobOpenAd  {
     return result;
   }
 
-  void load() async {
-    await _channel.invokeMethod('load',
+  Future<bool?> load() async {
+    var isSuccess=  await _channel.invokeMethod('load',
       _channelMethodsArguments
         ..['adUnitId'] = adUnitId
     );
+    return isSuccess;
   }
 
   void show() async {

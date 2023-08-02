@@ -43,6 +43,7 @@ class AdmobOpenAd(
                             super.onAdLoaded(p0)
                             appOpenAd = p0;
                             isLoadingAd=false
+                            result.success(true)
                             adChannel.invokeMethod("onAdLoaded", null)
                             Log.e("wpf123wpf", "onAdLoaded: ======================")
                         }
@@ -52,6 +53,7 @@ class AdmobOpenAd(
                             super.onAdFailedToLoad(loadAdError)
                             isLoadingAd=false
                             Log.e("wpf123wpf", "LoadAdError: ======================"+loadAdError.message)
+                            result.success(false)
                             adChannel.invokeMethod("onAdFailedToLoad", null)
                         }
 
@@ -67,7 +69,6 @@ class AdmobOpenAd(
                     AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
                     loadCallback
                 )
-                result.success(null)
             }
             "isLoaded" -> {
                 var isSuccess = false

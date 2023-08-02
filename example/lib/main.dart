@@ -94,8 +94,11 @@ class _MyAppState extends State<MyApp> {
               child: Text('展示插页'),
             ),
             ElevatedButton(
-              onPressed: () {
-                admobOpenAd.load();
+              onPressed: () async{
+                var success= await  admobOpenAd.load();
+                if(success??false){
+                  admobOpenAd.show();
+                }
               },
               child: Text('开屏加载'),
             ),
