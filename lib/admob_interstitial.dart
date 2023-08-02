@@ -35,10 +35,8 @@ class AdmobInterstitial  {
     return isSuccess;
   }
 
-  void show() async {
-    if (await isLoaded == true) {
+  Future<bool?> show() async {
       await _channel.invokeMethod('show', _channelMethodsArguments);
-    }
   }
 
   void dispose() async {

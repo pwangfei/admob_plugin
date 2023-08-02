@@ -27,8 +27,8 @@ class AdmobInterstitial(private val flutterPluginBinding: FlutterPlugin.FlutterP
   override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
     when(call.method) {
 
-
       "load" -> {
+
         val adChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "admob_flutter/interstitial")
         val adUnitId = call.argument<String>("adUnitId")
         val adRequest: AdRequest = AdRequest.Builder().build()
@@ -53,21 +53,6 @@ class AdmobInterstitial(private val flutterPluginBinding: FlutterPlugin.FlutterP
 
           })
 
-        mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
-          override fun onAdDismissedFullScreenContent() {
-            mInterstitialAd = null
-            Log.e("wpf123wpf", "The ad was dismissed.")
-          }
-
-          override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-            mInterstitialAd = null
-            Log.e("wpf123wpf", "The ad failed to show.")
-          }
-
-          override fun onAdShowedFullScreenContent() {
-            Log.e("wpf123wpf", "The ad was shown.")
-          }
-        }
       }
       "isLoaded" -> {
         var isSuccess = false
@@ -77,14 +62,26 @@ class AdmobInterstitial(private val flutterPluginBinding: FlutterPlugin.FlutterP
         result.success(isSuccess)
       }
       "show" -> {
-        val id = call.argument<Int>("id")
-        Log.e("wpf123wpf", "show: "+mInterstitialAd)
+        mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+          override fun onAdDismissedFullScreenContent() {
+            mInterstitialAd = null
+            Log.e("wpf123wpf", "The ad was dismissed.")
+          }
+
+          override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+            mInterstitialAd = null
+            result.success(false)
+            Log.e("wpf123wpf", "The ad failed to show.")
+          }
+
+          override fun onAdShowedFullScreenContent() {
+            Log.e("wpf123wpf", "The ad was shown.")
+            result.success(true)
+          }
+        }
         mInterstitialAd?.show(mActivity)
       }
-      "dispose" -> {
-        val id = call.argument<Int>("id")
 
-      }
       else -> result.notImplemented()
     }
   }
