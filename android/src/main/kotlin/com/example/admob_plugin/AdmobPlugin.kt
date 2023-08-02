@@ -51,7 +51,6 @@ class AdmobPlugin: FlutterPlugin, MethodCallHandler , ActivityAware {
 
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     mActivity=binding.activity
-    Log.e("wpf123wpf", "onAttachedToActivity================="+mActivity)
     interstitialChannel = MethodChannel(flutterPlugin.binaryMessenger, "admob_flutter/interstitial")
     interstitialChannel.setMethodCallHandler(AdmobInterstitial(flutterPlugin,mActivity))
     interstitialChannel = MethodChannel(flutterPlugin.binaryMessenger, "admob_flutter/apenad")

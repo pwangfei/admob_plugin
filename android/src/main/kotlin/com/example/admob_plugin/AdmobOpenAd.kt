@@ -1,23 +1,15 @@
 package com.example.admob_plugin
 
 import android.app.Activity
-import android.content.Context
-import android.os.Bundle
 import android.util.Log
-import androidx.annotation.NonNull
-import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-import io.flutter.embedding.engine.plugins.activity.ActivityAware
-import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 
 /**
  * 开屏广告
@@ -28,10 +20,21 @@ class AdmobOpenAd(
 ) : MethodChannel.MethodCallHandler {
 
     private var appOpenAd: AppOpenAd? = null
+    private var isLoadingAd = false
+    private var isShowingAd = false
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "load" -> {
                 val adChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "admob_flutter/apenad")
+                if(appOpenAd!=null){//缓存有开屏了
+                    adChannel.invokeMethod("onAdLoaded", null)
+                    return
+                }
+                if(isLoadingAd){//正在加载
+                    return
+                }
+                isLoadingAd = true;
                 val adUnitId = call.argument<String>("adUnitId")
                 val loadCallback: AppOpenAd.AppOpenAdLoadCallback =
                     object : AppOpenAd.AppOpenAdLoadCallback() {
@@ -39,6 +42,7 @@ class AdmobOpenAd(
                         override fun onAdLoaded(p0: AppOpenAd) {
                             super.onAdLoaded(p0)
                             appOpenAd = p0;
+                            isLoadingAd=false
                             adChannel.invokeMethod("onAdLoaded", null)
                             Log.e("wpf123wpf", "onAdLoaded: ======================")
                         }
@@ -46,11 +50,15 @@ class AdmobOpenAd(
 
                         override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                             super.onAdFailedToLoad(loadAdError)
+                            isLoadingAd=false
                             Log.e("wpf123wpf", "LoadAdError: ======================"+loadAdError.message)
                             adChannel.invokeMethod("onAdFailedToLoad", null)
                         }
 
                     }
+
+
+
                 val request = AdRequest.Builder().build()
                 AppOpenAd.load(
                     mActivity,
@@ -59,22 +67,48 @@ class AdmobOpenAd(
                     AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
                     loadCallback
                 )
-                Log.e("wpf123wpf", "load: ======================12222222222222")
                 result.success(null)
             }
             "isLoaded" -> {
-                val id = call.argument<Int>("id")
-                result.success(true)
+                var isSuccess = false
+                if (appOpenAd != null) {
+                    isSuccess = true;
+                }
+                result.success(isSuccess)
             }
             "show" -> {
-                val id = call.argument<Int>("id")
+                if (isShowingAd) {//正在show
+                    return;
+                }
                 Log.e("wpf123wpf", "show: " + appOpenAd)
+                appOpenAd?.setFullScreenContentCallback(object : FullScreenContentCallback() {
+
+                    override fun onAdDismissedFullScreenContent() {
+                        super.onAdDismissedFullScreenContent()
+                        appOpenAd = null;
+                        isShowingAd = false;
+                        Log.e("wpf123wpf", "onAdDismissedFullScreenContent: ======================")
+                    }
+
+                    override fun onAdFailedToShowFullScreenContent(p0: AdError) {
+                        super.onAdFailedToShowFullScreenContent(p0)
+
+                        appOpenAd = null;
+                        isShowingAd = false;
+                        Log.e("wpf123wpf", "onAdFailedToShowFullScreenContent: ======================")
+                    }
+
+                    override fun onAdShowedFullScreenContent() {
+                        super.onAdShowedFullScreenContent()
+
+                        Log.e("wpf123wpf", "onAdShowedFullScreenContent: ======================")
+                    }
+
+                })
+                isShowingAd = true;
                 appOpenAd?.show(mActivity)
             }
-            "dispose" -> {
-                val id = call.argument<Int>("id")
 
-            }
             else -> result.notImplemented()
         }
     }

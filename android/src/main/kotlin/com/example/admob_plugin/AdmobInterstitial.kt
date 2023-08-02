@@ -53,26 +53,27 @@ class AdmobInterstitial(private val flutterPluginBinding: FlutterPlugin.FlutterP
 
         mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
           override fun onAdDismissedFullScreenContent() {
-
+            mInterstitialAd = null
             Log.e("wpf123wpf", "The ad was dismissed.")
           }
 
           override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-            // Called when fullscreen content failed to show.
+            mInterstitialAd = null
             Log.e("wpf123wpf", "The ad failed to show.")
           }
 
           override fun onAdShowedFullScreenContent() {
-            mInterstitialAd = null
             Log.e("wpf123wpf", "The ad was shown.")
           }
         }
-        Log.e("wpf123wpf", "load: ======================12222222222222")
         result.success(null)
       }
       "isLoaded" -> {
-        val id = call.argument<Int>("id")
-        result.success(true)
+        var isSuccess = false
+        if (mInterstitialAd != null) {
+          isSuccess = true;
+        }
+        result.success(isSuccess)
       }
       "show" -> {
         val id = call.argument<Int>("id")
