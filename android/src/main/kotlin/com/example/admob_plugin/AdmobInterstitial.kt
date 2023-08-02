@@ -39,6 +39,7 @@ class AdmobInterstitial(private val flutterPluginBinding: FlutterPlugin.FlutterP
               mInterstitialAd = interstitialAd
 
               adChannel.invokeMethod("loaded", null)
+              result.success(true)
               Log.e("wpf123wpf", "onAdLoaded")
             }
 
@@ -47,6 +48,7 @@ class AdmobInterstitial(private val flutterPluginBinding: FlutterPlugin.FlutterP
               Log.e("wpf123wpf", loadAdError.message)
               mInterstitialAd = null
               adChannel.invokeMethod("failedToLoad", null)
+              result.success(false)
             }
 
           })
@@ -66,7 +68,6 @@ class AdmobInterstitial(private val flutterPluginBinding: FlutterPlugin.FlutterP
             Log.e("wpf123wpf", "The ad was shown.")
           }
         }
-        result.success(null)
       }
       "isLoaded" -> {
         var isSuccess = false

@@ -78,8 +78,12 @@ class _MyAppState extends State<MyApp> {
         body: Column(
           children: [
             ElevatedButton(
-              onPressed: () {
-                interstitialAd.load();
+              onPressed: () async{
+               var success= await interstitialAd.load();
+               print("是否加载成功啦====================================${success}");
+               if(success??false){
+                 interstitialAd.show();
+               }
               },
               child: Text('插页加载'),
             ),
