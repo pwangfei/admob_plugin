@@ -34,7 +34,7 @@ class AdmobOpenAd  {
     return isSuccess;
   }
 
-  void show() async {
+  Future<bool?> show() async {
     if (await isLoaded == true) {
       await _channel.invokeMethod('show', _channelMethodsArguments);
     }

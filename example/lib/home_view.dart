@@ -1,6 +1,7 @@
 import 'package:admob_plugin/admob_interstitial.dart';
 import 'package:admob_plugin/admob_open_ad.dart';
 import 'package:admob_plugin_example/InterstitialAdStandardHelper.dart';
+import 'package:admob_plugin_example/OpenAdStandardHelper.dart';
 import 'package:admob_plugin_example/interstitial_ad_strategy.dart';
 import 'package:admob_plugin_example/interstitial_loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class HomeView extends StatefulWidget {
 class _MyAppState extends State<HomeView> {
   String _platformVersion = 'Unknown';
   final _admobPlugin = AdmobPlugin();
-  late AdmobOpenAd admobOpenAd;
+
   bool isShow = true;
   bool isShowNative = true;
 
@@ -27,9 +28,7 @@ class _MyAppState extends State<HomeView> {
     super.initState();
     initPlatformState();
 
-    admobOpenAd = AdmobOpenAd(
-      adUnitId: 'ca-app-pub-3940256099942544/3419835294',
-    );
+
   }
 
   Future<void> initPlatformState() async {
@@ -93,16 +92,16 @@ class _MyAppState extends State<HomeView> {
             ),
             ElevatedButton(
               onPressed: () async {
-                var success = await admobOpenAd.load();
+                var success = await OpenAdStandardHelper().load();
                 if (success ?? false) {
-                  admobOpenAd.show();
+                  OpenAdStandardHelper().show();
                 }
               },
               child: Text('开屏加载'),
             ),
             ElevatedButton(
               onPressed: () {
-                admobOpenAd.show();
+                OpenAdStandardHelper().show();
               },
               child: Text('开屏展示'),
             ),
