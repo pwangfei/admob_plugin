@@ -88,6 +88,7 @@ class AdmobOpenAd(
                         super.onAdDismissedFullScreenContent()
                         appOpenAd = null;
                         isShowingAd = false;
+                        result.success(true)
                         Log.e("wpf123wpf", "onAdDismissedFullScreenContent: ======================")
                     }
 
@@ -102,7 +103,6 @@ class AdmobOpenAd(
 
                     override fun onAdShowedFullScreenContent() {
                         super.onAdShowedFullScreenContent()
-                        result.success(true)
                         Log.e("wpf123wpf", "onAdShowedFullScreenContent: ======================")
                     }
 
