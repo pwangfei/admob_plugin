@@ -43,29 +43,29 @@ class AdmobMixBanner(
         adView?.setAdListener(object : AdListener() {
             override fun onAdLoaded() {
 
-                Log.e("wpf123wpf", "onAdLoaded: ")
+                Log.e("wpf123wpf", "AdmobMixBanner onAdLoaded: ")
             }
 
             override fun onAdFailedToLoad(adError: LoadAdError) {
 
-                Log.e("wpf123wpf", "onAdFailedToLoad: " + adError.toString())
+                Log.e("wpf123wpf", "AdmobMixBanner onAdFailedToLoad: " + adError.toString())
 
             }
 
             override fun onAdOpened() {
 
-                Log.e("wpf123wpf", "onAdOpened: ")
+                Log.e("wpf123wpf", "AdmobMixBanner onAdOpened: ")
 
             }
 
             override fun onAdClicked() {
 
-                Log.e("wpf123wpf", "onAdClicked: ")
+                Log.e("wpf123wpf", "AdmobMixBanner onAdClicked: ")
             }
 
             override fun onAdClosed() {
 
-                Log.e("wpf123wpf", "onAdClosed: ")
+                Log.e("wpf123wpf", "AdmobMixBanner onAdClosed: ")
             }
         })
 

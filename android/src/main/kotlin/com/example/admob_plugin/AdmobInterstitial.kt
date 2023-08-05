@@ -55,18 +55,18 @@ class AdmobInterstitial(
             "show" -> {
                 mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
                     override fun onAdDismissedFullScreenContent() {
-                        Log.e("wpf123wpf", "The ad was dismissed.")
+                        Log.e("wpf123wpf", "AdmobInterstitial The ad was dismissed.")
                     }
 
                     override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                         mInterstitialAd = null
                         result.success(false)
-                        Log.e("wpf123wpf", "The ad failed to show.")
+                        Log.e("wpf123wpf", "AdmobInterstitial The ad failed to show.")
                         load(adUnitId,null);
                     }
 
                     override fun onAdShowedFullScreenContent() {
-                        Log.e("wpf123wpf", "The ad was shown.")
+                        Log.e("wpf123wpf", "AdmobInterstitial The ad was shown.")
                         mInterstitialAd = null
                         result.success(true)
                         load(adUnitId,null);
@@ -90,13 +90,13 @@ class AdmobInterstitial(
                     mInterstitialAd = interstitialAd
                     adChannel.invokeMethod("loaded", null)
                     adCallback?.success()
-                    Log.e("wpf123wpf", "onAdLoaded")
+                    Log.e("wpf123wpf", "AdmobInterstitial onAdLoaded")
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     Log.e("wpf123wpf", loadAdError.message)
                     mInterstitialAd = null
-                    adChannel.invokeMethod("failedToLoad", null)
+                    adChannel.invokeMethod("AdmobInterstitial failedToLoad", null)
                     adCallback?.fail()
                 }
 
