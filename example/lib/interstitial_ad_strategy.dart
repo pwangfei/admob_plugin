@@ -10,6 +10,7 @@ class InterstitialAdStrategy {
   static Future<void> showInterstitialAd(ParamVoidCallback afterAd) async {
     //1.有广告直接展示
     var isReady = await InterstitialAdStandardHelper().isLoaded();
+    print("当前插页是否正确缓存===============================================${isReady}");
     if (isReady) {
       await InterstitialAdStandardHelper().show();
       afterAd.call();

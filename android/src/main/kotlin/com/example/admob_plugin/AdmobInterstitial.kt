@@ -21,70 +21,86 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 /**
  * 插页广告
  */
-class AdmobInterstitial(private val flutterPluginBinding: FlutterPlugin.FlutterPluginBinding,val mActivity: Activity?): MethodChannel.MethodCallHandler {
+class AdmobInterstitial(
+    private val flutterPluginBinding: FlutterPlugin.FlutterPluginBinding,
+    val mActivity: Activity?
+) : MethodChannel.MethodCallHandler {
 
-  private var mInterstitialAd: InterstitialAd? = null
-  override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-    when(call.method) {
+    private var mInterstitialAd: InterstitialAd? = null
 
-      "load" -> {
+    private var adUnitId:String?=null
+    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
+        when (call.method) {
 
-        val adChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "admob_flutter/interstitial")
-        val adUnitId = call.argument<String>("adUnitId")
+            "load" -> {
+                adUnitId = call.argument<String>("adUnitId")
+                load(adUnitId,object :AdCallback{
+                    override fun success() {
+                        result.success(true)
+                    }
+
+                    override fun fail() {
+                        result.success(false)
+                    }
+                })
+
+            }
+            "isLoaded" -> {
+                var isSuccess = false
+                if (mInterstitialAd != null) {
+                    isSuccess = true;
+                }
+                result.success(isSuccess)
+            }
+            "show" -> {
+                mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+                    override fun onAdDismissedFullScreenContent() {
+                        Log.e("wpf123wpf", "The ad was dismissed.")
+                    }
+
+                    override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                        mInterstitialAd = null
+                        result.success(false)
+                        Log.e("wpf123wpf", "The ad failed to show.")
+                        load(adUnitId,null);
+                    }
+
+                    override fun onAdShowedFullScreenContent() {
+                        Log.e("wpf123wpf", "The ad was shown.")
+                        mInterstitialAd = null
+                        result.success(true)
+                        load(adUnitId,null);
+                    }
+                }
+                mInterstitialAd?.show(mActivity)
+            }
+
+            else -> result.notImplemented()
+        }
+    }
+
+
+    fun load(adUnitId: String?,adCallback:AdCallback?) {
+        val adChannel =
+            MethodChannel(flutterPluginBinding.binaryMessenger, "admob_flutter/interstitial")
         val adRequest: AdRequest = AdRequest.Builder().build()
         InterstitialAd.load(mActivity, adUnitId, adRequest,
-          object : InterstitialAdLoadCallback() {
-            override fun onAdLoaded(interstitialAd: InterstitialAd) {
+            object : InterstitialAdLoadCallback() {
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                    mInterstitialAd = interstitialAd
+                    adChannel.invokeMethod("loaded", null)
+                    adCallback?.success()
+                    Log.e("wpf123wpf", "onAdLoaded")
+                }
 
-              mInterstitialAd = interstitialAd
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    Log.e("wpf123wpf", loadAdError.message)
+                    mInterstitialAd = null
+                    adChannel.invokeMethod("failedToLoad", null)
+                    adCallback?.fail()
+                }
 
-              adChannel.invokeMethod("loaded", null)
-              result.success(true)
-              Log.e("wpf123wpf", "onAdLoaded")
-            }
-
-            override fun onAdFailedToLoad( loadAdError: LoadAdError) {
-              // Handle the error
-              Log.e("wpf123wpf", loadAdError.message)
-              mInterstitialAd = null
-              adChannel.invokeMethod("failedToLoad", null)
-              result.success(false)
-            }
-
-          })
-
-      }
-      "isLoaded" -> {
-        var isSuccess = false
-        if (mInterstitialAd != null) {
-          isSuccess = true;
-        }
-        result.success(isSuccess)
-      }
-      "show" -> {
-        mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
-          override fun onAdDismissedFullScreenContent() {
-            mInterstitialAd = null
-            Log.e("wpf123wpf", "The ad was dismissed.")
-          }
-
-          override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-            mInterstitialAd = null
-            result.success(false)
-            Log.e("wpf123wpf", "The ad failed to show.")
-          }
-
-          override fun onAdShowedFullScreenContent() {
-            Log.e("wpf123wpf", "The ad was shown.")
-            result.success(true)
-          }
-        }
-        mInterstitialAd?.show(mActivity)
-      }
-
-      else -> result.notImplemented()
+            })
     }
-  }
-
 
 }
