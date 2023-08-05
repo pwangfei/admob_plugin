@@ -26,6 +26,7 @@ class AdmobInterstitial(
     val mActivity: Activity?
 ) : MethodChannel.MethodCallHandler {
 
+    private var adLog="ADLog";
 
     class InterstitialAdInfo(var interstitialAd: InterstitialAd?, var time: Long)
 
@@ -67,21 +68,23 @@ class AdmobInterstitial(
                 var mInterstitialAd = allAds[adUnitId]?.interstitialAd
                 mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
                     override fun onAdDismissedFullScreenContent() {
-                        Log.e("wpf123wpf", "AdmobInterstitial The ad was dismissed.")
+                        Log.e(adLog, "AdmobInterstitial The ad was dismissed.")
+                        mInterstitialAd = null
+                        load(adUnitId, null);
                     }
 
                     override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                         mInterstitialAd = null
                         result.success(false)
-                        Log.e("wpf123wpf", "AdmobInterstitial The ad failed to show.")
+                        Log.e(adLog, "AdmobInterstitial The ad failed to show.")
                         load(adUnitId, null);
                     }
 
                     override fun onAdShowedFullScreenContent() {
-                        Log.e("wpf123wpf", "AdmobInterstitial The ad was shown.")
-                        mInterstitialAd = null
+                        Log.e(adLog, "AdmobInterstitial The ad was shown.")
+
                         result.success(true)
-                        load(adUnitId, null);
+
                     }
                 }
                 mInterstitialAd?.show(mActivity)
@@ -103,11 +106,11 @@ class AdmobInterstitial(
                     adCallback?.success()
                     var interstitialAdInfo=InterstitialAdInfo(interstitialAd,System.currentTimeMillis());
                     allAds[adUnitId ?: ""] = interstitialAdInfo;
-                    Log.e("wpf123wpf", "AdmobInterstitial onAdLoaded")
+                    Log.e(adLog, "AdmobInterstitial onAdLoaded")
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                    Log.e("wpf123wpf", loadAdError.message)
+                    Log.e(adLog, loadAdError.message)
                     allAds[adUnitId ?: ""] = null;
                     adChannel.invokeMethod("AdmobInterstitial failedToLoad", null)
                     adCallback?.fail()
@@ -121,7 +124,6 @@ class AdmobInterstitial(
      */
     fun checkExpired() {
         for ((key, value) in allAds) {
-            println("Key: $key, Value: $value")
            var time= value?.time?:System.currentTimeMillis()
             if(System.currentTimeMillis()-time>1000*60*60){//超时了要进行清理下
                 allAds[key]=null;

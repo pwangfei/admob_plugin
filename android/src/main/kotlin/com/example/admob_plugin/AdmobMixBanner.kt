@@ -19,7 +19,7 @@ class AdmobMixBanner(
     PlatformView {
 
     private var adViewContainer: FrameLayout? = null
-
+    private var adLog="ADLog";
 
     init {
         //这个xml一定不能复用
@@ -43,29 +43,29 @@ class AdmobMixBanner(
         adView?.setAdListener(object : AdListener() {
             override fun onAdLoaded() {
 
-                Log.e("wpf123wpf", "AdmobMixBanner onAdLoaded: ")
+                Log.e(adLog, "AdmobMixBanner onAdLoaded: ")
             }
 
             override fun onAdFailedToLoad(adError: LoadAdError) {
 
-                Log.e("wpf123wpf", "AdmobMixBanner onAdFailedToLoad: " + adError.toString())
+                Log.e(adLog, "AdmobMixBanner onAdFailedToLoad: " + adError.toString())
 
             }
 
             override fun onAdOpened() {
 
-                Log.e("wpf123wpf", "AdmobMixBanner onAdOpened: ")
+                Log.e(adLog, "AdmobMixBanner onAdOpened: ")
 
             }
 
             override fun onAdClicked() {
 
-                Log.e("wpf123wpf", "AdmobMixBanner onAdClicked: ")
+                Log.e(adLog, "AdmobMixBanner onAdClicked: ")
             }
 
             override fun onAdClosed() {
 
-                Log.e("wpf123wpf", "AdmobMixBanner onAdClosed: ")
+                Log.e(adLog, "AdmobMixBanner onAdClosed: ")
             }
         })
 

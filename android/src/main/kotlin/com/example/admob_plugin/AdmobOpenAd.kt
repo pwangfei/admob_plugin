@@ -12,7 +12,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
 /**
- * 开屏广告
+ * 开屏广告，只支持一个开屏广告
  */
 class AdmobOpenAd(
     private val flutterPluginBinding: FlutterPlugin.FlutterPluginBinding,
@@ -22,6 +22,9 @@ class AdmobOpenAd(
     private var appOpenAd: AppOpenAd? = null
     private var isLoadingAd = false
     private var isShowingAd = false
+    private var loadTime=0L;
+
+    private var adLog="ADLog";
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
@@ -43,16 +46,17 @@ class AdmobOpenAd(
                             super.onAdLoaded(p0)
                             appOpenAd = p0;
                             isLoadingAd=false
+                            loadTime=System.currentTimeMillis();
                             result.success(true)
                             adChannel.invokeMethod("onAdLoaded", null)
-                            Log.e("wpf123wpf", "onAdLoaded: ======================")
+                            Log.e(adLog, "AdmobOpenAd==========onAdLoaded")
                         }
 
 
                         override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                             super.onAdFailedToLoad(loadAdError)
                             isLoadingAd=false
-                            Log.e("wpf123wpf", "LoadAdError: ======================"+loadAdError.message)
+                            Log.e(adLog, "AdmobOpenAd==========LoadAdError"+loadAdError.message)
                             result.success(false)
                             adChannel.invokeMethod("onAdFailedToLoad", null)
                         }
@@ -71,6 +75,7 @@ class AdmobOpenAd(
                 )
             }
             "isLoaded" -> {
+                checkExpired()
                 var isSuccess = false
                 if (appOpenAd != null) {
                     isSuccess = true;
@@ -81,7 +86,6 @@ class AdmobOpenAd(
                 if (isShowingAd) {//正在show
                     return;
                 }
-                Log.e("wpf123wpf", "show: " + appOpenAd)
                 appOpenAd?.setFullScreenContentCallback(object : FullScreenContentCallback() {
 
                     override fun onAdDismissedFullScreenContent() {
@@ -89,7 +93,7 @@ class AdmobOpenAd(
                         appOpenAd = null;
                         isShowingAd = false;
                         result.success(true)
-                        Log.e("wpf123wpf", "onAdDismissedFullScreenContent: ======================")
+                        Log.e(adLog, "AdmobOpenAd==========onAdDismissedFullScreenContent")
                     }
 
                     override fun onAdFailedToShowFullScreenContent(p0: AdError) {
@@ -98,12 +102,12 @@ class AdmobOpenAd(
                         appOpenAd = null;
                         isShowingAd = false;
                         result.success(false)
-                        Log.e("wpf123wpf", "onAdFailedToShowFullScreenContent: ======================")
+                        Log.e(adLog, "AdmobOpenAd==========onAdFailedToShowFullScreenContent")
                     }
 
                     override fun onAdShowedFullScreenContent() {
                         super.onAdShowedFullScreenContent()
-                        Log.e("wpf123wpf", "onAdShowedFullScreenContent: ======================")
+                        Log.e(adLog, "AdmobOpenAd==========onAdShowedFullScreenContent")
                     }
 
                 })
@@ -114,6 +118,13 @@ class AdmobOpenAd(
             else -> result.notImplemented()
         }
     }
-
+    /**
+     * 检查是否要进行超时清理
+     */
+    fun checkExpired() {
+        if(System.currentTimeMillis()-loadTime>1000*60*60*4){//超时了要进行清理下
+            appOpenAd = null;
+        }
+    }
 
 }

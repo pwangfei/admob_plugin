@@ -35,7 +35,7 @@ class InterstitialAdStrategy {
   static Future<void> delayShowInterstitialAd() async {
     int waitTime = 0;
     int needWaitTime = 12000;
-    InterstitialAdStandardHelper().load();///todo 缓存机制
+    InterstitialAdStandardHelper().load();
     while (waitTime < needWaitTime) {
       var isReady = await InterstitialAdStandardHelper().isLoaded();
       if (isReady) {

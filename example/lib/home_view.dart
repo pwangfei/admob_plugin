@@ -72,16 +72,6 @@ class _MyAppState extends State<HomeView> {
         body: Column(
           children: [
             ElevatedButton(
-              onPressed: () async {
-                var success = await InterstitialAdStandardHelper().load();
-                print("是否加载成功啦====================================${success}");
-                if (success ?? false) {
-                  InterstitialAdStandardHelper().show();
-                }
-              },
-              child: Text('展示插页'),
-            ),
-            ElevatedButton(
               onPressed: () {
                 InterstitialAdStrategy.showInterstitialAd(() => {
 
@@ -99,12 +89,7 @@ class _MyAppState extends State<HomeView> {
               },
               child: Text('开屏加载'),
             ),
-            ElevatedButton(
-              onPressed: () {
-                OpenAdStandardHelper().show();
-              },
-              child: Text('开屏展示'),
-            ),
+
             ElevatedButton(
               onPressed: () {
                 setState(() {
