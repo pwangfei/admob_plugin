@@ -27,19 +27,21 @@ class AdmobInterstitial(
 ) : MethodChannel.MethodCallHandler {
 
 
+    class InterstitialAdInfo(var interstitialAd: InterstitialAd?, var time: Long)
+
     /**
      * 支持多插页的情况
      */
     companion object {
-        val allAds: MutableMap<String, InterstitialAd?> = mutableMapOf()
+        var allAds: MutableMap<String, InterstitialAdInfo?> = mutableMapOf()
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
 
             "load" -> {
-               var adUnitId = call.argument<String>("adUnitId")
-                load(adUnitId,object :AdCallback{
+                var adUnitId = call.argument<String>("adUnitId")
+                load(adUnitId, object : AdCallback {
                     override fun success() {
                         result.success(true)
                     }
@@ -51,8 +53,9 @@ class AdmobInterstitial(
 
             }
             "isLoaded" -> {
+                checkExpired()
                 var adUnitId = call.argument<String>("adUnitId")
-                var mInterstitialAd=allAds[adUnitId]
+                var mInterstitialAd = allAds[adUnitId]?.interstitialAd
                 var isSuccess = false
                 if (mInterstitialAd != null) {
                     isSuccess = true;
@@ -61,7 +64,7 @@ class AdmobInterstitial(
             }
             "show" -> {
                 var adUnitId = call.argument<String>("adUnitId")
-                var mInterstitialAd=allAds[adUnitId]
+                var mInterstitialAd = allAds[adUnitId]?.interstitialAd
                 mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
                     override fun onAdDismissedFullScreenContent() {
                         Log.e("wpf123wpf", "AdmobInterstitial The ad was dismissed.")
@@ -71,14 +74,14 @@ class AdmobInterstitial(
                         mInterstitialAd = null
                         result.success(false)
                         Log.e("wpf123wpf", "AdmobInterstitial The ad failed to show.")
-                        load(adUnitId,null);
+                        load(adUnitId, null);
                     }
 
                     override fun onAdShowedFullScreenContent() {
                         Log.e("wpf123wpf", "AdmobInterstitial The ad was shown.")
                         mInterstitialAd = null
                         result.success(true)
-                        load(adUnitId,null);
+                        load(adUnitId, null);
                     }
                 }
                 mInterstitialAd?.show(mActivity)
@@ -89,7 +92,7 @@ class AdmobInterstitial(
     }
 
 
-    fun load(adUnitId: String?,adCallback:AdCallback?) {
+    fun load(adUnitId: String?, adCallback: AdCallback?) {
         val adChannel =
             MethodChannel(flutterPluginBinding.binaryMessenger, "admob_flutter/interstitial")
         val adRequest: AdRequest = AdRequest.Builder().build()
@@ -98,18 +101,32 @@ class AdmobInterstitial(
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
                     adChannel.invokeMethod("loaded", null)
                     adCallback?.success()
-                    allAds[adUnitId?:""]=interstitialAd;
+                    var interstitialAdInfo=InterstitialAdInfo(interstitialAd,System.currentTimeMillis());
+                    allAds[adUnitId ?: ""] = interstitialAdInfo;
                     Log.e("wpf123wpf", "AdmobInterstitial onAdLoaded")
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     Log.e("wpf123wpf", loadAdError.message)
-                    allAds[adUnitId?:""]=null;
+                    allAds[adUnitId ?: ""] = null;
                     adChannel.invokeMethod("AdmobInterstitial failedToLoad", null)
                     adCallback?.fail()
                 }
 
             })
+    }
+
+    /**
+     * 检查是否要进行超时清理
+     */
+    fun checkExpired() {
+        for ((key, value) in allAds) {
+            println("Key: $key, Value: $value")
+           var time= value?.time?:System.currentTimeMillis()
+            if(System.currentTimeMillis()-time>1000*60*60){//超时了要进行清理下
+                allAds[key]=null;
+            }
+        }
     }
 
 }
