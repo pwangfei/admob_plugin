@@ -7,7 +7,7 @@ class AdmobInterstitial  {
   static const MethodChannel _channel =
       MethodChannel('admob_flutter/interstitial');
 
-  late int id;
+
   late MethodChannel _adChannel;
   final String adUnitId;
 
@@ -15,7 +15,6 @@ class AdmobInterstitial  {
   AdmobInterstitial({
     required this.adUnitId,
   })  {
-    id = hashCode;
     _adChannel = MethodChannel('admob_flutter/interstitial');
     _adChannel.setMethodCallHandler(handleEvent);
   }
@@ -23,7 +22,7 @@ class AdmobInterstitial  {
 
 
   Future<bool?> get isLoaded async {
-    final result = await _channel.invokeMethod('isLoaded', _channelMethodsArguments);
+    final result = await _channel.invokeMethod('isLoaded', _channelMethodsArguments..['adUnitId'] = adUnitId);
     return result;
   }
 
@@ -36,12 +35,9 @@ class AdmobInterstitial  {
   }
 
   Future<bool?> show() async {
-      await _channel.invokeMethod('show', _channelMethodsArguments);
+      await _channel.invokeMethod('show', _channelMethodsArguments..['adUnitId'] = adUnitId);
   }
 
-  void dispose() async {
-    await _channel.invokeMethod('dispose', _channelMethodsArguments);
-  }
 
   Map<String, dynamic> get _channelMethodsArguments => <String, dynamic>{
 

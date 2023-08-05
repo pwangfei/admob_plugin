@@ -26,14 +26,19 @@ class AdmobInterstitial(
     val mActivity: Activity?
 ) : MethodChannel.MethodCallHandler {
 
-    private var mInterstitialAd: InterstitialAd? = null
 
-    private var adUnitId:String?=null
+    /**
+     * 支持多插页的情况
+     */
+    companion object {
+        val allAds: MutableMap<String, InterstitialAd?> = mutableMapOf()
+    }
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
 
             "load" -> {
-                adUnitId = call.argument<String>("adUnitId")
+               var adUnitId = call.argument<String>("adUnitId")
                 load(adUnitId,object :AdCallback{
                     override fun success() {
                         result.success(true)
@@ -46,6 +51,8 @@ class AdmobInterstitial(
 
             }
             "isLoaded" -> {
+                var adUnitId = call.argument<String>("adUnitId")
+                var mInterstitialAd=allAds[adUnitId]
                 var isSuccess = false
                 if (mInterstitialAd != null) {
                     isSuccess = true;
@@ -53,6 +60,8 @@ class AdmobInterstitial(
                 result.success(isSuccess)
             }
             "show" -> {
+                var adUnitId = call.argument<String>("adUnitId")
+                var mInterstitialAd=allAds[adUnitId]
                 mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
                     override fun onAdDismissedFullScreenContent() {
                         Log.e("wpf123wpf", "AdmobInterstitial The ad was dismissed.")
@@ -87,15 +96,15 @@ class AdmobInterstitial(
         InterstitialAd.load(mActivity, adUnitId, adRequest,
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                    mInterstitialAd = interstitialAd
                     adChannel.invokeMethod("loaded", null)
                     adCallback?.success()
+                    allAds[adUnitId?:""]=interstitialAd;
                     Log.e("wpf123wpf", "AdmobInterstitial onAdLoaded")
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     Log.e("wpf123wpf", loadAdError.message)
-                    mInterstitialAd = null
+                    allAds[adUnitId?:""]=null;
                     adChannel.invokeMethod("AdmobInterstitial failedToLoad", null)
                     adCallback?.fail()
                 }
