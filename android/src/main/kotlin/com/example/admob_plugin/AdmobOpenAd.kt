@@ -32,6 +32,7 @@ class AdmobOpenAd(
                 val adChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "admob_flutter/apenad")
                 if(appOpenAd!=null){//缓存有开屏了
                     adChannel.invokeMethod("onAdLoaded", null)
+                    result.success(true)
                     return
                 }
                 if(isLoadingAd){//正在加载

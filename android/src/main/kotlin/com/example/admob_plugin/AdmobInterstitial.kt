@@ -42,6 +42,11 @@ class AdmobInterstitial(
 
             "load" -> {
                 var adUnitId = call.argument<String>("adUnitId")
+                var mInterstitialAd = allAds[adUnitId]?.interstitialAd
+                if(mInterstitialAd!=null){
+                    result.success(true)
+                    return
+                }
                 load(adUnitId, object : AdCallback {
                     override fun success() {
                         result.success(true)
